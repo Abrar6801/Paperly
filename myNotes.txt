@@ -1,0 +1,3 @@
+Shadcn/ui - used for components reason to use it it allows us to modify each and every component if we want to, just to under components/ui nad boom there is all the code for each of the component you have
+
+Editor - tiptap
