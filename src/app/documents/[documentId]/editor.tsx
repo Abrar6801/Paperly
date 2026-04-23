@@ -110,8 +110,7 @@ export const Editor = ({ initialContent }: EditorProps) => {
             LineHeightExtension.configure({ types: ["heading", "paragraph"], defaultLineHeight: "normal" }),
             FontFamily,
             TextStyle,
-            Image,
-            ImageResize,  // already includes the base Image extension
+            ImageResize,
             Table,
             TableRow,
             TableCell,
