@@ -2,24 +2,10 @@ import {Liveblocks} from "@liveblocks/node"
 import {ConvexHttpClient} from "convex/browser"
 import {auth, currentUser, clerkClient} from "@clerk/nextjs/server"
 import { api } from "../../../../convex/_generated/api"
+import { cursorColor } from "@/lib/cursor-color"
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!)
 const liveblocks = new Liveblocks({secret: process.env.LIVEBLOCKS_SECRET_KEY!})
-
-const CURSOR_COLORS = [
-    "#E03131", "#2F9E44", "#1971C2", "#F08C00",
-    "#7048E8", "#0C8599", "#E64980", "#5C7CFA",
-    "#20C997", "#FD7E14", "#A61E4D", "#364FC7",
-]
-
-function cursorColor(userId: string): string {
-    let hash = 0
-    for (let i = 0; i < userId.length; i++) {
-        hash = ((hash << 5) - hash) + userId.charCodeAt(i)
-        hash = hash | 0
-    }
-    return CURSOR_COLORS[Math.abs(hash) % CURSOR_COLORS.length]
-}
 
 export async function POST(req: Request){
     const{sessionClaims} = await auth()

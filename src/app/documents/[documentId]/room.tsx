@@ -7,6 +7,7 @@ import { useAuth } from "@clerk/nextjs"
 import {FullScreenLoader} from "@/components/ui/fullscreen-loader"
 import { toast } from "sonner"
 import { getUsers, getDocumentInfos } from "./actions"
+import { cursorColor } from "@/lib/cursor-color"
 
 type User = {id:string; name:string; avatar:string}
 
@@ -38,7 +39,7 @@ export function Room({children}:{children: ReactNode}){
             return userIds.map((userId) => {
                 const user = users.find((u) => u.id === userId);
                 if (!user) return undefined;
-                return { name: user.name, avatar: user.avatar };
+                return { name: user.name, avatar: user.avatar, color: cursorColor(userId) };
             });
         }}
         resolveMentionSuggestions={({text})=>{
