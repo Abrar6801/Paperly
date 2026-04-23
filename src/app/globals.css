@@ -87,6 +87,38 @@ body {
   }
 }
 
+/* Collaborative cursors — border-color / background-color are set via inline
+   style by @tiptap/extension-collaboration-cursor using userInfo.color,
+   so we only set non-color visual properties here. */
+.collaboration-cursor__caret {
+  border-width: 2px;
+  position: relative;
+}
+
+.collaboration-cursor__label {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px 4px 4px 0;
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  position: absolute;
+  top: -1.5em;
+  left: -1px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.mention {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 .tiptap{
 
   /* Link styles */
@@ -258,5 +290,26 @@ body {
     }
   }
 
+  /* For mobile */
+  .floating-threads{
+    display: none;
+  }
   
+  /* For desktops*/
+  .anchored-threads{
+    display: block;
+    max-width: 300px;
+    width: 100%;
+    position: absolute;
+    right: 12px;
+  }
+
+  @media (max-width: 640px){
+    .floating-threads{
+      display: block;
+    }
+    .anchored-threads{
+      display: none;
+    }
+  }
 }

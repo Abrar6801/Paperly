@@ -14,5 +14,19 @@ export default defineSchema({
   .searchIndex("search_title",{
     searchField: "title",
     filterFields: ["ownerId","organizationId"]
+  }),
+
+  notifications: defineTable({
+    recipientId: v.string(),
+    senderId: v.string(),
+    senderName: v.string(),
+    senderAvatar: v.optional(v.string()),
+    documentId: v.string(),
+    documentTitle: v.string(),
+    body: v.string(),
+    commentId: v.string(),
+    isRead: v.boolean(),
   })
+  .index("by_recipient", ["recipientId"])
+  .index("by_comment_recipient", ["commentId", "recipientId"]),
 });

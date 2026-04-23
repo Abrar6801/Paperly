@@ -6,9 +6,32 @@ import {Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, Men
 import { BoldIcon, FileIcon, FileJsonIcon, FilePenIcon, FilePlusIcon, FileTextIcon, GlobeIcon, ItalicIcon, PrinterIcon, Redo2Icon, RemoveFormattingIcon, StrikethroughIcon, TextIcon, TrashIcon, UnderlineIcon, Undo2Icon } from "lucide-react"
 import { BsFilePdf } from "react-icons/bs"
 import { useEditorStore } from "@/store/use-editor-store";
+import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
+import { Avatars } from "./avatars";
+import { NotificationBell } from "./notification-bell";
+import { useParams, useRouter } from "next/navigation";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
+import { RenameDialog } from "@/components/rename-dialog";
+import { RemoveDialog } from "@/components/remove-dialog";
+import { toast } from "sonner";
 
 export const Navbar = () =>{
     const {editor} = useEditorStore()
+    const router = useRouter()
+    const { documentId } = useParams<{ documentId: string }>()
+    const doc = useQuery(api.documents.getById, { id: documentId as Id<"documents"> })
+    const create = useMutation(api.documents.create)
+
+    const onNewDocument = () => {
+        create({ title: "Untitled Document", initialContent: "" })
+            .catch(() => toast.error("Something went wrong"))
+            .then((id) => {
+                toast.success("Document created");
+                router.push(`/documents/${id}`);
+            })
+    }
     const insertTable = ({rows,cols} : {rows:number,cols:number})=>{
         editor?.chain().focus().insertTable({rows,cols,withHeaderRow: false}).run()
     };
@@ -52,7 +75,7 @@ export const Navbar = () =>{
         <nav className = "flex items-center justify-between">
             <div className = "flex gap-2 items-center">
                 <Link href="/">
-                    <Image src = "/logo.svg" alt ="logo" width={36} height={36}/>
+                    <Image src="/logo.svg" alt="logo" width={36} height={36} style={{ height: "auto" }}/>
                 </Link>
                 <div className = "flex flex-col">
                     <DocumentInput/>
@@ -88,20 +111,30 @@ export const Navbar = () =>{
                                         </MenubarSubContent>
                                     </MenubarSub>
                                     <MenubarSeparator/>
-                                    <MenubarItem>
+                                    <MenubarItem onClick={onNewDocument}>
                                         <FilePlusIcon className="size-4 mr-2"/>
                                         New Document
                                     </MenubarItem>
                                     <MenubarSeparator/>
-                                    <MenubarItem>
-                                    <FilePenIcon className="size-4 mr-2"/>
-                                                Rename
-                                    </MenubarItem>
+                                    <RenameDialog
+                                        documentId={documentId as Id<"documents">}
+                                        initialTitle={doc?.title ?? "Untitled Document"}
+                                    >
+                                        <MenubarItem onSelect={(e) => e.preventDefault()}>
+                                            <FilePenIcon className="size-4 mr-2"/>
+                                            Rename
+                                        </MenubarItem>
+                                    </RenameDialog>
                                     <MenubarSeparator/>
-                                    <MenubarItem>
-                                    <TrashIcon className="size-4 mr-2"/>
-                                                Remove
-                                    </MenubarItem>
+                                    <RemoveDialog
+                                        documentId={documentId as Id<"documents">}
+                                        onSuccess={() => router.push("/")}
+                                    >
+                                        <MenubarItem onSelect={(e) => e.preventDefault()}>
+                                            <TrashIcon className="size-4 mr-2"/>
+                                            Remove
+                                        </MenubarItem>
+                                    </RemoveDialog>
                                     <MenubarSeparator/>
                                     <MenubarItem  onClick={() => window.print()}>
                                     <PrinterIcon className="size-4 mr-2"/>
@@ -190,7 +223,17 @@ export const Navbar = () =>{
                     </div>
                 </div>
             </div>
-            
+            <div className="flex gap-3 items-center pl-6">
+                <Avatars/>
+                <NotificationBell/>
+                <OrganizationSwitcher
+                    afterCreateOrganizationUrl="/"
+                    afterLeaveOrganizationUrl="/"
+                    afterSelectOrganizationUrl="/"
+                    afterSelectPersonalUrl='/'
+                />
+                <UserButton/>
+            </div>
         </nav>
     )
 }

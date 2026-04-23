@@ -455,8 +455,9 @@ const ToolbarButton = ({
     icon:Icon,
 }:ToolbarButtonProps) =>{
     return(
-        <button 
-        onClick={onClick} 
+        <button
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={onClick}
         className  ={cn("text-sm h-7 min-w-7 flex items-center justify-center rounded-sm hover:bg-neutral-200/80",isActive && "bg-neutral-200/80")}>
             <Icon className="size-4"/>
         </button>
@@ -519,8 +520,8 @@ export const Toolbar = () =>{
             {
                 label: "Comment",
                 icon: MessageSquarePlusIcon,
-                onClick: () => console.log("TODO: Comment"),
-                isActive: false // TODO: Enable this functionality
+                onClick: () => editor?.chain().focus().addPendingComment().run(),
+                isActive: editor?.isActive("liveblocksCommentMark")
             },
             {
                 label: "List Todo",

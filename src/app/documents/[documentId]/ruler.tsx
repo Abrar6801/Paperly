@@ -1,11 +1,19 @@
 import { useRef, useState } from "react"
 import {FaCaretDown} from "react-icons/fa"
 
+const PAGE_WIDTH = 816
+const MINIMUM_SPACE = 100
 
 const markers = Array.from({length: 83}, (_,i)=> i)
-export const Ruler = () =>{
-    const [leftMargin, setLeftMargin] = useState(56)
-    const [rightMargin, setRightMargin] =useState(56)
+
+interface RulerProps {
+    leftMargin: number;
+    rightMargin: number;
+    onLeftMarginChange: (value: number) => void;
+    onRightMarginChange: (value: number) => void;
+}
+
+export const Ruler = ({ leftMargin, rightMargin, onLeftMarginChange, onRightMarginChange }: RulerProps) =>{
     const [isDraggingLeft, setIsDraggingLeft] = useState(false)
     const [isDraggingRight, setIsDraggingRight] = useState(false)
     const rulerRef = useRef<HTMLDivElement>(null)
@@ -19,24 +27,20 @@ export const Ruler = () =>{
     }
 
     const handleMouseMove = (e: React.MouseEvent) => {
-        const PAGE_WIDTH = 816
-        const MINIMUM_SPACE = 100
         if ((isDraggingLeft || isDraggingRight) && rulerRef.current) {
-            const container =  rulerRef.current.querySelector("#ruler-container");
+            const container = rulerRef.current.querySelector("#ruler-container");
             if (container){
                 const containerRect = container.getBoundingClientRect();
                 const relativeX = e.clientX - containerRect.left
-                const rawPosition = Math.max(0,Math.min(PAGE_WIDTH, relativeX))
+                const rawPosition = Math.max(0, Math.min(PAGE_WIDTH, relativeX))
 
                 if (isDraggingLeft){
-                    const maxLeftPosition = PAGE_WIDTH - rightMargin -MINIMUM_SPACE
-                    const newLeftPosition = Math.min(rawPosition, maxLeftPosition)
-                    setLeftMargin(newLeftPosition);
-                } else if(isDraggingRight){
+                    const maxLeftPosition = PAGE_WIDTH - rightMargin - MINIMUM_SPACE
+                    onLeftMarginChange(Math.min(rawPosition, maxLeftPosition));
+                } else if (isDraggingRight){
                     const maxRightPosition = PAGE_WIDTH - (leftMargin + MINIMUM_SPACE)
-                    const newRightPosition = Math.max(PAGE_WIDTH - rawPosition,0)
-                    const constrainedRightPosition = Math.min(newRightPosition, maxRightPosition)
-                    setRightMargin(constrainedRightPosition)
+                    const newRightPosition = Math.max(PAGE_WIDTH - rawPosition, 0)
+                    onRightMarginChange(Math.min(newRightPosition, maxRightPosition))
                 }
             }
         }
@@ -45,13 +49,6 @@ export const Ruler = () =>{
     const handleMouseUp = () => {
         setIsDraggingLeft(false);
         setIsDraggingRight(false)
-    }
-    const handleLeftDoubleClick = () =>{
-        setLeftMargin(56);
-    }
-
-    const handleRightDoubleClick = () => {
-        setRightMargin(56);
     }
 
     return (
@@ -62,19 +59,19 @@ export const Ruler = () =>{
         onMouseLeave = {handleMouseUp}
         className="w-[816px] mx-auto h-6 border-b border-gray-300 flex items-end relative select-none print:hidden">
             <div id = "ruler-container" className="w-full h-full relative">
-                <Marker 
+                <Marker
                 position={leftMargin}
                 isLeft={true}
                 isDragging={isDraggingLeft}
                 onMouseDown={handleLeftMouseDown}
-                onDoubleClick={handleLeftDoubleClick}
+                onDoubleClick={() => onLeftMarginChange(56)}
                 />
-                <Marker 
+                <Marker
                 position={rightMargin}
                 isLeft={false}
                 isDragging={isDraggingRight}
                 onMouseDown={handleRightMouseDown}
-                onDoubleClick={handleRightDoubleClick}
+                onDoubleClick={() => onRightMarginChange(56)}
                 />
                 <div className="absolute inset-x-0 bottom-0 h-full">
                     <div className="relative h-full w-[816px]">
