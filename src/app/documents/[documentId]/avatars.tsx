@@ -2,6 +2,7 @@
 
 import { useOthers, useSelf } from "@liveblocks/react/suspense";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import Image from "next/image";
 
 const AVATAR_SIZE = 36;
 const MAX_SHOWN = 5;
@@ -20,11 +21,13 @@ function Avatar({ src, name }: AvatarProps) {
                         style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
                         className="relative -ml-2 inline-block rounded-full border-2 border-white ring-2 ring-[#3b72f6] overflow-hidden flex-shrink-0"
                     >
-                        <img
+                        <Image
                             src={src}
                             alt={name}
-                            className="w-full h-full object-cover"
+                            fill
+                            className="object-cover"
                             referrerPolicy="no-referrer"
+                            unoptimized
                         />
                     </div>
                 </TooltipTrigger>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { BellIcon, MoreHorizontalIcon, Trash2Icon, MailIcon } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -93,10 +94,13 @@ export function NotificationBell() {
                   {/* Avatar */}
                   <div className="relative flex-shrink-0 mt-0.5">
                     {n.senderAvatar ? (
-                      <img
+                      <Image
                         src={n.senderAvatar}
                         alt=""
+                        width={32}
+                        height={32}
                         className="size-8 rounded-full object-cover"
+                        unoptimized
                       />
                     ) : (
                       <div className="size-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold">

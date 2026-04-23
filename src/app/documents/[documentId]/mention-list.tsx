@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import Image from "next/image";
 
 export interface MentionUser {
   id: string;
@@ -69,7 +70,7 @@ export const MentionList = forwardRef<MentionListRef, Props>(({ items, command }
           }`}
         >
           {item.avatar ? (
-            <img src={item.avatar} alt="" className="size-7 rounded-full object-cover flex-shrink-0 ring-1 ring-neutral-200" />
+            <Image src={item.avatar} alt="" width={28} height={28} className="size-7 rounded-full object-cover flex-shrink-0 ring-1 ring-neutral-200" unoptimized />
           ) : (
             <div className="size-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold flex-shrink-0">
               {item.name[0]?.toUpperCase()}

@@ -1,6 +1,6 @@
 "use server"
 
-import {auth, currentUser, clerkClient} from "@clerk/nextjs/server"
+import {auth, clerkClient} from "@clerk/nextjs/server"
 import { ConvexHttpClient } from "convex/browser"
 import { api } from "../../../../convex/_generated/api"
 import { Id } from "../../../../convex/_generated/dataModel"
